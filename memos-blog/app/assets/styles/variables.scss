@@ -1,0 +1,40 @@
+// Light mode (default)
+:root {
+  --bg: #f8f5f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --border: #e8e0d8;
+  --border-style: 2px dashed;
+  --text: #333333;
+  --text-sub: #888888;
+  --text-link: #5b7a9d;
+  --accent: #5b7a9d;
+  --accent-hover: #4a6680;
+  --reaction-bg: #f0f0f0;
+  --reaction-active-bg: #e8f0f8;
+  --overlay: rgba(0, 0, 0, 0.5);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 680px;
+  --font-body: 'LXGW WenKai', 'Noto Sans SC', sans-serif;
+  --font-heading: 'ZCOOL XiaoWei', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+// Dark mode
+html.dark {
+  --bg: #1a1a1e;
+  --bg-card: #242428;
+  --bg-card-hover: #2a2a2e;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --border: #3a3a3e;
+  --text: #e0e0e0;
+  --text-sub: #888888;
+  --text-link: #7ba4cc;
+  --accent: #7ba4cc;
+  --accent-hover: #92b8db;
+  --reaction-bg: #333338;
+  --reaction-active-bg: #2a3540;
+  --overlay: rgba(0, 0, 0, 0.7);
+}

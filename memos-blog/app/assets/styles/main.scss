@@ -1,0 +1,160 @@
+// Reset
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// Layout
+.page-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// Memo card (flatpaper paper texture)
+.memo-card {
+  background: var(--bg-card);
+  border: var(--border-style) var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: background 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    background: var(--bg-card-hover);
+  }
+}
+
+// Memo header (icefox style)
+.memo-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.memo-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.memo-meta {
+  flex: 1;
+}
+
+.memo-author {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.memo-pin-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.memo-time {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+// Tape decoration (flatpaper style)
+.tape-decoration {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 20px;
+    width: 60px;
+    height: 12px;
+    background: linear-gradient(135deg, rgba(232, 168, 124, 0.6), rgba(232, 168, 124, 0.3));
+    border-radius: 2px;
+    transform: rotate(-2deg);
+  }
+}
+
+// Reaction bar
+.reaction-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+}
+
+.reaction-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--reaction-bg);
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover { background: var(--reaction-active-bg); }
+  &.is-active { background: var(--reaction-active-bg); border-color: var(--accent); }
+}
+
+// Infinite scroll loading
+.scroll-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-sub);
+}
+
+.scroll-nomore {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-sub);
+  font-size: 0.9rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .memo-card {
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+  }
+  .memo-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
