@@ -31,7 +31,6 @@ export function useMemos(extraFilter?: string) {
         params.filter = filters.join(' && ')
       }
 
-      // Use local API route (proxied by Cloudflare Pages Functions)
       const data = await $fetch('/api/memos', { params }) as MemosListResponse
 
       if (initial) {

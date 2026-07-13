@@ -1,14 +1,25 @@
 <template>
-  <div class="memo-location" v-if="location?.placeholder">
+  <div class="memo-location" v-if="location">
     <UiIcon name="ph:map-pin" :size="14" />
-    <span>{{ location.placeholder }}</span>
+    <span>{{ text }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   location: { placeholder: string; latitude: number; longitude: number }
 }>()
+
+const text = computed(() => {
+  const loc = props.location
+  if (loc.placeholder) return loc.placeholder
+  const lat = Number(loc.latitude)
+  const lng = Number(loc.longitude)
+  if (!isNaN(lat) && !isNaN(lng)) {
+    return `${lat.toFixed(2)}°, ${lng.toFixed(2)}°`
+  }
+  return ''
+})
 </script>
 
 <style scoped>

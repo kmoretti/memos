@@ -1,4 +1,4 @@
-const CACHE_NAME = 'memos-blog-v2'
+const CACHE_NAME = 'memos-blog-v3'
 
 // Install: precache shell
 self.addEventListener('install', (event) => {
@@ -22,12 +22,15 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
-// Fetch: all requests return a valid Response
+// Fetch: only handle same-origin http/https requests
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
 
-  // Skip non-GET requests
+  // Skip non-GET, non-http(s), and cross-origin requests
   if (event.request.method !== 'GET') return
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return
+  // Skip all cross-origin requests (extensions, third-party, etc.)
+  if (url.origin !== self.location.origin) return
 
   // API requests: NetworkFirst
   if (url.pathname.startsWith('/api/')) {
@@ -74,7 +77,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response
         })
-        .catch(() => cached)
+        .catch(() => cached || new Response('', { status: 504 }))
 
       return cached || fetchPromise
     })
