@@ -17,8 +17,6 @@ export default defineNuxtConfig({
     webPushPrivateKey: process.env.WEB_PUSH_PRIVATE_KEY || 'KLakvOXpsk2U5t_FS5Don40b5BGqO8jYvS2UrJXShYo',
     public: {
       siteTitle: '我的博客',
-      memosBaseUrl: process.env.MEMOS_BASE_URL || 'https://mm.2005815.xyz',
-      memosAccessToken: process.env.MEMOS_ACCESS_TOKEN || '',
       webPushPublicKey: 'BDSM0sJLDYaBxpiwjzTDa57Cm1HL95qVLgRiz-BI1EXvoRbvgAsQjuYIkPOphAyPmypBUFb93YV3YhBg7HQOFeU',
     },
   },

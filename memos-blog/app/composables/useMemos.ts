@@ -31,23 +31,8 @@ export function useMemos(extraFilter?: string) {
         params.filter = filters.join(' && ')
       }
 
-      const runtimeConfig = useRuntimeConfig()
-      const baseUrl = runtimeConfig.public.memosBaseUrl || 'https://mm.2005815.xyz'
-      const token = runtimeConfig.memosAccessToken || ''
-
-      const url = new URL(`${baseUrl}/api/v1/memos`)
-      for (const [key, value] of Object.entries(params)) {
-        if (value !== undefined && value !== null) {
-          url.searchParams.set(key, String(value))
-        }
-      }
-
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-      }
-
-      const data = await $fetch(url.toString(), { headers }) as MemosListResponse
+      // Use local API route (proxied by Cloudflare Pages Functions)
+      const data = await $fetch('/api/memos', { params }) as MemosListResponse
 
       if (initial) {
         memos.value = data.memos || []
