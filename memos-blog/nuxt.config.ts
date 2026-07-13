@@ -51,16 +51,6 @@ export default defineNuxtConfig({
       display: 'standalone',
       start_url: '/',
       orientation: 'any',
-      icons: {
-        64: 'true',
-        128: 'true',
-        192x192: 'true',
-        256x256: 'true',
-        384x384: 'true',
-        512x512: 'true',
-        maskable: 'true',
-        purpose: 'any maskable',
-      },
     },
     icon: {
       source: 'https://q2.qlogo.cn/headimg_dl?dst_uin=3149261770&spec=0',
