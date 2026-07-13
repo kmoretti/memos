@@ -1,16 +1,10 @@
-const CACHE_NAME = 'memos-blog-v1'
-const PRECACHE_URLS = [
-  '/',
-  '/offline.html',
-  '/icon.jpg',
-  '/favicon.ico',
-]
+const CACHE_NAME = 'memos-blog-v2'
 
 // Install: precache shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_URLS)
+      return cache.addAll(['/', '/offline.html', '/icon.png', '/favicon.ico'])
     })
   )
   self.skipWaiting()
@@ -28,17 +22,22 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
-// Fetch: cache strategies
+// Fetch: all requests return a valid Response
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
+
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return
 
   // API requests: NetworkFirst
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          if (response && response.ok) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          }
           return response
         })
         .catch(() => caches.match(event.request))
@@ -46,57 +45,39 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Static assets: CacheFirst
-  if (event.request.destination === 'style' || event.request.destination === 'script') {
-    event.respondWith(
-      caches.match(event.request).then((cached) => {
-        if (cached) return cached
-        return fetch(event.request).then((response) => {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
-          return response
-        })
-      })
-    )
-    return
-  }
-
-  // Images: StaleWhileRevalidate
-  if (event.request.destination === 'image') {
-    event.respondWith(
-      caches.match(event.request).then((cached) => {
-        const fetchPromise = fetch(event.request).then((response) => {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
-          return response
-        })
-        return cached || fetchPromise
-      })
-    )
-    return
-  }
-
-  // HTML/navigations: NetworkFirst, fallback to offline page
+  // HTML navigations: NetworkFirst, fallback to offline
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          if (response && response.ok) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          }
           return response
         })
         .catch(() => {
-          return caches.match(event.request).then((cached) => {
-            return cached || caches.match('/offline.html')
-          })
+          return caches.match('/offline.html')
         })
     )
     return
   }
 
-  // Default: network with cache fallback
+  // Everything else: stale-while-revalidate
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    caches.match(event.request).then((cached) => {
+      const fetchPromise = fetch(event.request)
+        .then((response) => {
+          if (response && response.ok) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          }
+          return response
+        })
+        .catch(() => cached)
+
+      return cached || fetchPromise
+    })
   )
 })
 
@@ -108,8 +89,8 @@ self.addEventListener('push', (event) => {
     event.waitUntil(
       self.registration.showNotification(data.title || '克喵的朋友圈', {
         body: data.body || '新动态',
-        icon: data.icon || '/icon.jpg',
-        badge: data.badge || '/icon.jpg',
+        icon: data.icon || '/icon.png',
+        badge: data.badge || '/icon.png',
         tag: 'memos-notification',
         renotify: true,
         data: { url: data.url || '/' },
