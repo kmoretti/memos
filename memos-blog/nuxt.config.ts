@@ -31,7 +31,7 @@ export default defineNuxtConfig({
         { name: 'mobile-web-app-capable', content: 'yes' },
       ],
       link: [
-        { rel: 'apple-touch-icon', href: '/icon.png' },
+        { rel: 'apple-touch-icon', href: '/icon.jpg' },
         { rel: 'manifest', href: '/manifest.webmanifest' },
       ],
       script: [

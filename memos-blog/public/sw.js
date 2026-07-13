@@ -2,7 +2,7 @@ const CACHE_NAME = 'memos-blog-v1'
 const PRECACHE_URLS = [
   '/',
   '/offline.html',
-  '/icon.png',
+  '/icon.jpg',
   '/favicon.ico',
 ]
 
@@ -108,8 +108,8 @@ self.addEventListener('push', (event) => {
     event.waitUntil(
       self.registration.showNotification(data.title || '克喵的朋友圈', {
         body: data.body || '新动态',
-        icon: data.icon || '/icon.png',
-        badge: data.badge || '/icon.png',
+        icon: data.icon || '/icon.jpg',
+        badge: data.badge || '/icon.jpg',
         tag: 'memos-notification',
         renotify: true,
         data: { url: data.url || '/' },
