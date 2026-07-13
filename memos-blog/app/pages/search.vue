@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MemosMemo, MemosListResponse } from '~/types/memo'
+import type { MemosMemo } from '~/types/memo'
 
 const query = ref('')
 const results = ref<MemosMemo[]>([])
@@ -58,7 +58,24 @@ async function fetchSearch() {
     if (config.memos?.creator) {
       params.filter += ` && creator == "${config.memos.creator}"`
     }
-    const data = await $fetch('/api/memos', { params }) as MemosListResponse
+
+    const runtimeConfig = useRuntimeConfig()
+    const baseUrl = runtimeConfig.public.memosBaseUrl || 'https://mm.2005815.xyz'
+    const token = runtimeConfig.memosAccessToken || ''
+
+    const url = new URL(`${baseUrl}/api/v1/memos`)
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== null) {
+        url.searchParams.set(key, String(value))
+      }
+    }
+
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+
+    const data = await $fetch(url.toString(), { headers }) as any
     results.value = data.memos || []
   } catch (e) {
     console.error('Search failed:', e)
