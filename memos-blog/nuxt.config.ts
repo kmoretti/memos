@@ -30,6 +30,7 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#5b7a9d' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
       ],
       link: [
         { rel: 'apple-touch-icon', href: '/icon.png' },
@@ -43,7 +44,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       VitePWA({
-        registerType: 'autoUpdate',
+        registerType: 'prompt',
         includeAssets: ['favicon.ico', 'robots.txt'],
         manifest: {
           name: '克喵的朋友圈',
