@@ -35,11 +35,6 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/icon.jpg' },
         { rel: 'manifest', href: '/manifest.webmanifest' },
       ],
-      script: [
-        {
-          children: `if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js'); }); }`,
-        },
-      ],
       htmlAttrs: { lang: 'zh-CN' },
     },
   },
