@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     appManifest: true,
   },
   runtimeConfig: {
+    memosBaseUrl: process.env.MEMOS_BASE_URL || 'https://mm.2005815.xyz',
     memosAccessToken: process.env.MEMOS_ACCESS_TOKEN || '',
     webPushPrivateKey: process.env.WEB_PUSH_PRIVATE_KEY || 'KLakvOXpsk2U5t_FS5Don40b5BGqO8jYvS2UrJXShYo',
     public: {
@@ -43,6 +44,6 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: 'cloudflare-pages-static',
+    preset: 'cloudflare-pages',
   },
 })
