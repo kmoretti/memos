@@ -64,15 +64,6 @@ export interface MemosReactionListResponse {
   totalSize: number
 }
 
-export interface MemosSignInRequest {
-  username: string
-  password: string
-}
-
-export interface MemosSignInResponse {
-  accessToken: string
-}
-
 export interface TagCount {
   name: string
   count: number

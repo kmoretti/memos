@@ -7,16 +7,11 @@
     </main>
 
     <LayoutAppFooter />
-
-    <AuthLoginModal
-      :visible="showLoginModal"
-      @close="showLoginModal = false"
-    />
+    <UiBackToTop />
   </div>
 </template>
 
 <script setup lang="ts">
-const { showLoginModal } = useAuth()
 const { init: initTheme } = useTheme()
 
 onMounted(() => {

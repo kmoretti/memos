@@ -1,6 +1,11 @@
 <template>
   <footer class="app-footer">
     <div class="footer-inner page-container">
+      <div v-if="config.footer.links?.length" class="footer-links">
+        <NuxtLink v-for="link in config.footer.links" :key="link.href" :to="link.href" class="footer-link">
+          {{ link.text }}
+        </NuxtLink>
+      </div>
       <p>{{ config.footer.copyright }}</p>
       <p v-if="config.footer.beian">
         <a :href="'https://beian.miit.gov.cn/'" target="_blank">{{ config.footer.beian }}</a>
@@ -27,5 +32,18 @@ const config = useAppConfig() as any
   flex-direction: column;
   gap: 0.25rem;
   align-items: center;
+}
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.footer-link {
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link:hover {
+  color: var(--text);
 }
 </style>

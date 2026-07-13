@@ -1,24 +1,12 @@
 <template>
-  <div class="reaction-bar" v-if="grouped.length > 0 || showPicker">
-    <button
+  <div class="reaction-bar" v-if="grouped.length > 0">
+    <span
       v-for="g in grouped"
-      :key="g.contentId"
+      :key="g.emoji"
       class="reaction-chip"
-      @click="handleToggle(g.contentId)"
     >
-      {{ g.contentId }} {{ g.count }}
-    </button>
-
-    <div class="reaction-add-wrapper" style="position: relative;">
-      <button class="reaction-add" @click="showPicker = !showPicker">
-        <UiIcon name="ph:smiley-plus" :size="16" />
-      </button>
-      <ReactionPicker
-        v-if="showPicker"
-        @select="handleAdd"
-        @click="showPicker = false"
-      />
-    </div>
+      {{ g.emoji }} {{ g.count }}
+    </span>
   </div>
 </template>
 
@@ -30,24 +18,37 @@ const props = defineProps<{
   reactions: MemosReaction[]
 }>()
 
-const { toggleReaction, groupReactions } = useReaction()
-const { requireAuth } = useAuth()
-const showPicker = ref(false)
-
 const grouped = computed(() => {
-  const groups = groupReactions(props.reactions)
-  return Object.entries(groups).map(([contentId, data]) => ({
-    contentId,
-    count: data.count,
+  const groups: Record<string, number> = {}
+  for (const r of props.reactions) {
+    const emoji = r.reactionType || '?'
+    groups[emoji] = (groups[emoji] || 0) + 1
+  }
+  return Object.entries(groups).map(([emoji, count]) => ({
+    emoji,
+    count,
   }))
 })
-
-async function handleToggle(contentId: string) {
-  await toggleReaction(props.memoId, contentId)
-}
-
-async function handleAdd(emoji: string) {
-  showPicker.value = false
-  await toggleReaction(props.memoId, emoji)
-}
 </script>
+
+<style scoped>
+.reaction-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+}
+.reaction-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--reaction-bg);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+</style>

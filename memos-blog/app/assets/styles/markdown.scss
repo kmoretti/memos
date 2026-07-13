@@ -79,4 +79,19 @@
       margin-right: 0.5em;
     }
   }
+
+  .hashtag {
+    display: inline-block;
+    padding: 0.1em 0.5em;
+    background: var(--reaction-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.85em;
+    color: var(--text-link);
+    text-decoration: none;
+    transition: background 0.2s;
+    &:hover {
+      background: var(--reaction-active-bg);
+    }
+  }
 }

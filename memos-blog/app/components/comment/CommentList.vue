@@ -1,17 +1,22 @@
 <template>
   <div class="comment-section">
-    <button class="comment-toggle" @click="expanded = !expanded" v-if="!expanded">
-      💬 {{ count }}条评论 ▾
+    <button
+      class="comment-toggle"
+      @click="toggleExpand"
+    >
+      💬 {{ expanded ? '收起评论' : '查看评论' }}
+      <span v-if="!expanded && actualCount > 0" class="comment-count">({{ actualCount }})</span>
+      <span v-if="!expanded"> ▾</span>
     </button>
 
-    <div v-if="expanded">
+    <div v-if="expanded" class="comment-list">
       <CommentItem
         v-for="comment in comments"
         :key="comment.name"
         :comment="comment"
       />
-
-      <CommentForm :memo-id="memoId" @posted="fetchComments" />
+      <div v-if="loading" class="comment-loading">加载中...</div>
+      <div v-else-if="comments.length === 0" class="comment-empty">暂无评论</div>
     </div>
   </div>
 </template>
@@ -19,29 +24,37 @@
 <script setup lang="ts">
 import type { MemosMemo } from '~/types/memo'
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   memoId: string
-  count?: number
-}>(), {
-  count: 0,
-})
+}>()
 
 const expanded = ref(false)
 const comments = ref<MemosMemo[]>([])
+const actualCount = ref(0)
+const loading = ref(false)
 
 async function fetchComments() {
+  loading.value = true
   try {
     const data = await $fetch(`/api/memos/${props.memoId}/comments`) as any
     comments.value = data.memos || []
+    actualCount.value = comments.value.length
   } catch (e) {
     console.error('Failed to fetch comments:', e)
+  } finally {
+    loading.value = false
   }
 }
 
-watch(expanded, (val) => {
-  if (val && comments.value.length === 0) {
+function toggleExpand() {
+  expanded.value = !expanded.value
+  if (expanded.value && comments.value.length === 0) {
     fetchComments()
   }
+}
+
+onMounted(() => {
+  fetchComments()
 })
 </script>
 
@@ -51,6 +64,22 @@ watch(expanded, (val) => {
   border: none;
   color: var(--text-sub);
   cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+}
+.comment-count {
+  color: var(--text-link);
+}
+.comment-list {
+  margin-top: 0.5rem;
+}
+.comment-empty {
+  color: var(--text-sub);
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+}
+.comment-loading {
+  color: var(--text-sub);
   font-size: 0.85rem;
   padding: 0.5rem 0;
 }

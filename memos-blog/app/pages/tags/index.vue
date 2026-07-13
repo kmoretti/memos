@@ -16,7 +16,9 @@
 </template>
 
 <script setup lang="ts">
-const { data: tags } = await useFetch('/api/tags')
+const config = useAppConfig() as any
+const filter = config.memos?.creator ? `creator == "${config.memos.creator}"` : ''
+const { data: tags } = await useFetch('/api/tags', { params: filter ? { filter } : {} })
 
 useHead({ title: '标签' })
 </script>

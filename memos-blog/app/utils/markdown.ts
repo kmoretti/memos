@@ -6,6 +6,7 @@ const md = new MarkdownIt({
   typographer: true,
 })
 
+// Task list support
 md.core.ruler.after('inline', 'task-lists', (state) => {
   const tokens = state.tokens
   for (let i = 0; i < tokens.length; i++) {
@@ -25,6 +26,25 @@ md.core.ruler.after('inline', 'task-lists', (state) => {
   }
 })
 
+// Hashtag support: replace #tag with <span class="hashtag">#tag</span>
+// in rendered HTML output using string replacement.
 export function renderMarkdown(content: string): string {
-  return md.render(content)
+  // Replace #tag patterns BEFORE markdown rendering.
+  // Use HTAG<N>HTAG as placeholder (no underscores to avoid emphasis parsing).
+  const HASHTAG_RE = /(^|\s)#([\u4e00-\u9fa5a-zA-Z0-9_]+)/g
+  let counter = 0
+  const placeholders: string[] = []
+
+  const safe = content.replace(HASHTAG_RE, (match, prefix, tag) => {
+    const idx = counter++
+    placeholders.push(tag)
+    return prefix + `HTAG${idx}HTAG`
+  })
+
+  const html = md.render(safe)
+
+  // Replace HTAG<N>HTAG placeholders with styled hashtag spans
+  return html.replace(/HTAG(\d+)HTAG/g, (_, idx) => {
+    return `<span class="hashtag">#${placeholders[Number(idx)]}</span>`
+  })
 }

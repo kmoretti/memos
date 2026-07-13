@@ -1,22 +1,32 @@
 // config.ts
 export default {
   site: {
-    title: '我的博客',
-    description: '基于 Memos 的个人博客',
+    title: '克喵的朋友圈',
+    description: '基于Nuxt的memos展示博客',
     author: '克喵Moretti',
     avatar: 'https://q2.qlogo.cn/headimg_dl?dst_uin=3149261770&spec=0',
     logo: 'https://q2.qlogo.cn/headimg_dl?dst_uin=3149261770&spec=0',
-    favicon: '/favicon.ico',
+    favicon: 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/favicon-kemiao.ico',
     language: 'zh-CN',
     social: {
-      github: '',
+      github: 'https://s.2005815.xyz/github',
       twitter: '',
-      email: '',
+      email: 'https://s.2005815.xyz/mail',
     },
   },
   memos: {
     pageSize: 20,
     defaultVisibility: 'PUBLIC',
+    authUrl: 'https://mm.2005815.xyz/auth',
+    // 留空则展示所有用户
+    creator: 'users/kemiao',
+  },
+  banner: {
+    topVideo: '',
+    topImage: 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/bg.webp',
+    logo: 'https://q2.qlogo.cn/headimg_dl?dst_uin=3149261770&spec=0',
+    avatarLink: '/',
+    description: '人生如逆旅，我亦是行人。',
   },
   theme: {
     colors: {
@@ -38,16 +48,16 @@ export default {
     },
   },
   footer: {
-    copyright: '© 2024 作者名',
+    copyright: '© 2024 - Now 克喵Moretti',
     beian: '',
     powered: true,
-    links: [
-      { text: '关于', href: '/about' },
-    ],
+    // links: [
+    //   { text: '关于', href: '/about' },
+    // ],
   },
   seo: {
-    titleTemplate: '%s - 我的博客',
-    ogImage: '/og-image.png',
+    titleTemplate: '%s - Memos',
+    ogImage: 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/bg.webp',
     keywords: ['blog', 'memos'],
   },
   analytics: {

@@ -5,10 +5,12 @@ export default defineEventHandler(async (event) => {
   try {
     let pageToken = ''
     let hasMore = true
+    const query = getQuery(event)
 
     while (hasMore) {
       const params: Record<string, any> = { pageSize: 50 }
       if (pageToken) params.pageToken = pageToken
+      if (query.filter) params.filter = query.filter
 
       const data = await client.get('/memos', params) as any
 
