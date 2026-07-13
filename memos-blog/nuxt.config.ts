@@ -1,5 +1,3 @@
-import { VitePWA } from 'vite-plugin-pwa'
-
 export default defineNuxtConfig({
   future: { compatibilityVersion: 4 },
   compatibilityDate: '2025-01-01',
@@ -34,75 +32,17 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'apple-touch-icon', href: '/icon.png' },
+        { rel: 'manifest', href: '/manifest.webmanifest' },
+      ],
+      script: [
+        {
+          children: `if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js'); }); }`,
+        },
       ],
       htmlAttrs: { lang: 'zh-CN' },
     },
   },
   nitro: {
     preset: 'cloudflare-pages-static',
-  },
-  vite: {
-    plugins: [
-      VitePWA({
-        registerType: 'prompt',
-        includeAssets: ['favicon.ico', 'robots.txt'],
-        manifest: {
-          name: '克喵的朋友圈',
-          short_name: '克喵',
-          description: '基于Nuxt的memos展示博客',
-          theme_color: '#5b7a9d',
-          background_color: '#ffffff',
-          display: 'standalone',
-          start_url: '/',
-          scope: '/',
-          orientation: 'any',
-          icons: [
-            { src: '/icon.png', sizes: '64x64', type: 'image/png' },
-            { src: '/icon.png', sizes: '192x192', type: 'image/png' },
-            { src: '/icon.png', sizes: '512x512', type: 'image/png' },
-            { src: '/icon.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-          ],
-        },
-        workbox: {
-          navigateFallback: '/',
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-          runtimeCaching: [
-            {
-              urlPattern: /\/api\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                networkTimeoutSeconds: 5,
-                cacheName: 'api-cache',
-                expiration: { maxEntries: 100, maxAgeSeconds: 86400 },
-              },
-            },
-            {
-              urlPattern: /\/_nuxt\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'nuxt-static',
-                expiration: { maxEntries: 200, maxAgeSeconds: 31536000 },
-              },
-            },
-            {
-              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
-              handler: 'StaleWhileRevalidate',
-              options: {
-                cacheName: 'image-cache',
-                expiration: { maxEntries: 300, maxAgeSeconds: 2592000 },
-              },
-            },
-            {
-              urlPattern: /\.(?:woff|woff2|ttf|eot|otf)$/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'font-cache',
-                expiration: { maxEntries: 50, maxAgeSeconds: 31536000 },
-              },
-            },
-          ],
-        },
-      }),
-    ],
   },
 })
