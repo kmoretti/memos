@@ -1,22 +1,22 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   const lastTime = getLastPushTime()
 
-  // Fetch memos newer than last push time
-  let newMemos: any[] = []
   try {
-    const client = getMemosClient(event)
-    const filter = `createTime > "${new Date(lastTime).toISOString()}"`
-    const data = await client.get('/memos', {
+    const ds = getDataSource()
+    const result = await ds.query({
+      page: 1,
       pageSize: 20,
-      filter,
     })
-    newMemos = data.memos || []
+
+    // Filter posts newer than last push time
+    const newPosts = (result.items || []).filter(
+      (p: any) => p.createTime > lastTime / 1000
+    )
+
+    setLastPushTime(Date.now())
+
+    return { success: true, postCount: newPosts.length }
   } catch (e) {
-    throw createError({ statusCode: 500, message: 'Failed to fetch memos' })
+    throw createError({ statusCode: 500, message: 'Failed to fetch posts' })
   }
-
-  // Update last push time
-  setLastPushTime(Date.now())
-
-  return { success: true, memoCount: newMemos.length }
 })

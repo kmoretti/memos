@@ -1,56 +1,59 @@
-import type { MemosMemo, MemosListResponse } from '~/types/memo'
+import type { UnifiedPost, UnifiedPostResponse } from '~/types/post'
 
 export function useMemos(extraFilter?: string) {
-  const memos = ref<MemosMemo[]>([])
+  const posts = ref<UnifiedPost[]>([])
   const loading = ref(false)
   const pageToken = ref('')
   const hasMore = ref(true)
+  const config = useAppConfig() as any
 
-  async function fetchMemos(initial = false) {
+  async function fetchPosts(initial = false) {
     if (loading.value) return
     if (!initial && !hasMore.value) return
 
     loading.value = true
 
     try {
-      const config = useAppConfig() as any
-      const params: Record<string, any> = { pageSize: config.memos?.pageSize || 20 }
-      if (!initial && pageToken.value) {
+      const params: Record<string, any> = {
+        pageSize: config.memos?.pageSize || 20,
+      }
+
+      if (initial) {
+        pageToken.value = ''
+      }
+
+      if (pageToken.value) {
         params.pageToken = pageToken.value
       }
 
-      // Build filter: creator filter from config + optional extra filter
-      const filters: string[] = []
-      if (config.memos?.creator) {
-        filters.push(`creator == "${config.memos.creator}"`)
-      }
+      // Extract tag filter from extraFilter
       if (extraFilter) {
-        filters.push(extraFilter)
-      }
-      if (filters.length > 0) {
-        params.filter = filters.join(' && ')
+        const tagMatch = extraFilter.match(/tag in \['(.+?)'\]/)
+        if (tagMatch) {
+          params.tag = tagMatch[1]
+        }
       }
 
-      const data = await $fetch('/api/memos', { params }) as MemosListResponse
+      const data = await $fetch('/api/memos', { params }) as UnifiedPostResponse
 
       if (initial) {
-        memos.value = data.memos || []
+        posts.value = data.items || []
       } else {
-        memos.value.push(...(data.memos || []))
+        posts.value.push(...(data.items || []))
       }
 
       pageToken.value = data.nextPageToken || ''
-      hasMore.value = !!data.nextPageToken
+      hasMore.value = !!data.nextPageToken || (data.items?.length === (params.pageSize || 20) && data.items.length > 0)
     } catch (error) {
-      console.error('Failed to fetch memos:', error)
+      console.error('Failed to fetch posts:', error)
     } finally {
       loading.value = false
     }
   }
 
   function loadMore() {
-    fetchMemos(false)
+    fetchPosts(false)
   }
 
-  return { memos, loading, hasMore, fetchMemos, loadMore }
+  return { posts, loading, hasMore, fetchPosts, loadMore }
 }

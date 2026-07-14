@@ -1,37 +1,12 @@
-export default defineEventHandler(async (event) => {
-  const client = getMemosClient(event)
-  const tagMap = new Map<string, number>()
+export default defineEventHandler(async () => {
+  const ds = getDataSource()
 
   try {
-    let pageToken = ''
-    let hasMore = true
-    const query = getQuery(event)
-
-    while (hasMore) {
-      const params: Record<string, any> = { pageSize: 50 }
-      if (pageToken) params.pageToken = pageToken
-      if (query.filter) params.filter = query.filter
-
-      const data = await client.get('/memos', params) as any
-
-      for (const memo of data.memos || []) {
-        if (memo.visibility !== 'PUBLIC') continue
-        for (const tag of memo.tags || []) {
-          tagMap.set(tag, (tagMap.get(tag) || 0) + 1)
-        }
-      }
-
-      pageToken = data.nextPageToken || ''
-      hasMore = !!pageToken
-    }
-
-    return Array.from(tagMap.entries())
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
+    return await ds.getTags()
   } catch (error: any) {
     throw createError({
       statusCode: 500,
-      message: 'Failed to aggregate tags',
+      message: 'Failed to fetch tags',
     })
   }
 })

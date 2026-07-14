@@ -4,20 +4,18 @@
       <UiIcon name="ph:arrow-left" :size="18" /> 返回
     </button>
 
-    <MemoCard :memo="memo" />
+    <MemoCard :post="post" />
 
     <div class="comments-section">
-      <CommentList :memo-id="memoId" />
+      <CommentList :post-id="post.id" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { MemosMemo } from '~/types/memo'
+import type { UnifiedPost } from '~/types/post'
 
-const props = defineProps<{ memo: MemosMemo }>()
-
-const memoId = computed(() => props.memo.name?.replace('memos/', '') || '')
+defineProps<{ post: UnifiedPost }>()
 </script>
 
 <style scoped>

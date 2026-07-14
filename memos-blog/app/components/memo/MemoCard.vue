@@ -4,50 +4,52 @@
       <img :src="avatarUrl" class="memo-avatar" :alt="displayName" />
       <div class="memo-meta">
         <span class="memo-author">{{ displayName }}</span>
-        <span v-if="memo.pinned" class="memo-pin-badge">置顶</span>
+        <span v-if="post.pinned" class="memo-pin-badge">置顶</span>
       </div>
-      <MemoTime :time="memo.createTime" />
+      <MemoTime :time="post.createTime" />
     </header>
 
     <div class="memo-content">
       <UiImageLightbox>
-        <UiMarkdownRenderer :content="memo.content" />
+        <UiMarkdownRenderer :content="post.content" />
       </UiImageLightbox>
     </div>
 
-    <MemoAttachment
-      v-if="memo.attachments?.length"
-      :attachments="memo.attachments"
+    <UiPostImages
+      v-if="post.images?.length"
+      :images="post.images"
+      :layout="post.layout"
     />
 
-    <MemoLocation v-if="memo.location" :location="memo.location" />
-
-    <ReactionBar
-      :memo-id="memo.name"
-      :reactions="memo.reactions || []"
+    <UiPostExtension
+      v-for="ext in post.extensions"
+      :key="ext.type"
+      :extension="ext"
     />
 
-    <NuxtLink :to="`/memo/${memoId}`" class="memo-detail-link" v-if="showDetailLink">
+    <MemoLocation v-if="post.location" :location="post.location" />
+
+    <div v-if="post.likes > 0" class="memo-likes">
+      <UiIcon name="ph:heart" :size="14" /> {{ post.likes }}
+    </div>
+
+    <NuxtLink :to="`/memo/${post.id}`" class="memo-detail-link" v-if="showDetailLink">
       查看详情 →
     </NuxtLink>
   </article>
 </template>
 
 <script setup lang="ts">
-import type { MemosMemo } from '~/types/memo'
+import type { UnifiedPost } from '~/types/post'
 
 const props = withDefaults(defineProps<{
-  memo: MemosMemo
+  post: UnifiedPost
   showDetailLink?: boolean
 }>(), {
   showDetailLink: false,
 })
 
 const config = useAppConfig() as any
-
-const memoId = computed(() => {
-  return props.memo.name?.replace('memos/', '') || ''
-})
 
 const displayName = computed(() => config.site.author || '作者')
 const avatarUrl = computed(() => config.site.avatar || '/avatar.png')
@@ -59,5 +61,13 @@ const avatarUrl = computed(() => config.site.avatar || '/avatar.png')
   margin-top: 0.75rem;
   font-size: 0.9rem;
   color: var(--text-link);
+}
+.memo-likes {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-sub);
 }
 </style>

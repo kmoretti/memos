@@ -17,9 +17,9 @@
       <p v-else-if="results.length === 0" class="search-status">未找到相关结果</p>
       <div v-else class="memo-list">
         <MemoCard
-          v-for="memo in results"
-          :key="memo.name"
-          :memo="memo"
+          v-for="post in results"
+          :key="post.id"
+          :post="post"
           show-detail-link
         />
       </div>
@@ -28,12 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import type { MemosMemo } from '~/types/memo'
+import type { UnifiedPost } from '~/types/post'
 
 const query = ref('')
-const results = ref<MemosMemo[]>([])
+const results = ref<UnifiedPost[]>([])
 const loading = ref(false)
-const config = useAppConfig() as any
 
 let timer: ReturnType<typeof setTimeout> | null = null
 
@@ -51,32 +50,10 @@ async function fetchSearch() {
 
   loading.value = true
   try {
-    const params: Record<string, any> = {
-      pageSize: 50,
-      filter: `content.contains("${keyword}")`,
-    }
-    if (config.memos?.creator) {
-      params.filter += ` && creator == "${config.memos.creator}"`
-    }
-
-    const runtimeConfig = useRuntimeConfig()
-    const baseUrl = runtimeConfig.public.memosBaseUrl || 'https://mm.2005815.xyz'
-    const token = runtimeConfig.memosAccessToken || ''
-
-    const url = new URL(`${baseUrl}/api/v1/memos`)
-    for (const [key, value] of Object.entries(params)) {
-      if (value !== undefined && value !== null) {
-        url.searchParams.set(key, String(value))
-      }
-    }
-
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`
-    }
-
-    const data = await $fetch(url.toString(), { headers }) as any
-    results.value = data.memos || []
+    const data = await $fetch('/api/memos', {
+      params: { pageSize: 50, search: keyword },
+    }) as any
+    results.value = data.items || []
   } catch (e) {
     console.error('Search failed:', e)
     results.value = []

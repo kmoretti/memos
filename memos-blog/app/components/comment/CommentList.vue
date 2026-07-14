@@ -12,7 +12,7 @@
     <div v-if="expanded" class="comment-list">
       <CommentItem
         v-for="comment in comments"
-        :key="comment.name"
+        :key="comment.id"
         :comment="comment"
       />
       <div v-if="loading" class="comment-loading">加载中...</div>
@@ -22,22 +22,22 @@
 </template>
 
 <script setup lang="ts">
-import type { MemosMemo } from '~/types/memo'
+import type { UnifiedComment } from '~/types/post'
 
 const props = defineProps<{
-  memoId: string
+  postId: string
 }>()
 
 const expanded = ref(false)
-const comments = ref<MemosMemo[]>([])
+const comments = ref<UnifiedComment[]>([])
 const actualCount = ref(0)
 const loading = ref(false)
 
 async function fetchComments() {
   loading.value = true
   try {
-    const data = await $fetch(`/api/memos/${props.memoId}/comments`) as any
-    comments.value = data.memos || []
+    const data = await $fetch(`/api/memos/${props.postId}/comments`) as any
+    comments.value = Array.isArray(data) ? data : []
     actualCount.value = comments.value.length
   } catch (e) {
     console.error('Failed to fetch comments:', e)
@@ -52,10 +52,6 @@ function toggleExpand() {
     fetchComments()
   }
 }
-
-onMounted(() => {
-  fetchComments()
-})
 </script>
 
 <style scoped>

@@ -15,7 +15,7 @@ export default {
     },
   },
   memos: {
-    pageSize: 20,
+    pageSize: 10,
     defaultVisibility: 'PUBLIC',
     authUrl: 'https://mm.2005815.xyz/auth',
     // 留空则展示所有用户

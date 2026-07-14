@@ -1,22 +1,20 @@
 <template>
   <div class="comment-item">
-    <img :src="avatarUrl" class="comment-avatar" :alt="displayName" />
+    <div class="comment-avatar-placeholder">
+      <UiIcon name="ph:user-circle" :size="28" />
+    </div>
     <div class="comment-body">
-      <span class="comment-author">{{ displayName }}</span>
+      <span class="comment-author">{{ comment.author }}</span>
       <UiMarkdownRenderer :content="comment.content" />
-      <span class="comment-time">{{ formatRelativeTime(comment.createTime) }}</span>
+      <span class="comment-time">{{ formatRelativeTime(comment.createTime * 1000) }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { MemosMemo } from '~/types/memo'
+import type { UnifiedComment } from '~/types/post'
 
-const props = defineProps<{ comment: MemosMemo }>()
-
-const config = useAppConfig() as any
-const displayName = computed(() => config.site.author || '评论者')
-const avatarUrl = computed(() => config.site.avatar || '/avatar.png')
+defineProps<{ comment: UnifiedComment }>()
 </script>
 
 <style scoped>
@@ -26,10 +24,11 @@ const avatarUrl = computed(() => config.site.avatar || '/avatar.png')
   padding: 0.75rem 0;
   border-bottom: 1px dashed var(--border);
 }
-.comment-avatar {
+.comment-avatar-placeholder {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--text-sub);
 }
 .comment-author {
   font-weight: 600;

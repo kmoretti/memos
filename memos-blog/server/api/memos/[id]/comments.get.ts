@@ -1,13 +1,13 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-  const client = getMemosClient(event)
+  const ds = getDataSource()
 
   try {
-    return await client.get(`/memos/${id}/comments`)
+    return await ds.getComments(id!)
   } catch (error: any) {
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.data?.message || 'Failed to fetch comments',
+      statusCode: 500,
+      message: 'Failed to fetch comments',
     })
   }
 })

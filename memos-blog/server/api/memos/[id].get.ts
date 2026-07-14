@@ -1,13 +1,17 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-  const client = getMemosClient(event)
+  const ds = getDataSource()
 
   try {
-    return await client.get(`/memos/${id}`)
+    const post = await ds.getById(id!)
+    if (!post) {
+      throw createError({ statusCode: 404, message: 'Post not found' })
+    }
+    return post
   } catch (error: any) {
     throw createError({
       statusCode: error.statusCode || 500,
-      message: error.data?.message || 'Failed to fetch memo',
+      message: error.data?.message || error.message || 'Failed to fetch post',
     })
   }
 })

@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-const config = useAppConfig() as any
-const filter = config.memos?.creator ? `creator == "${config.memos.creator}"` : ''
-const { data: tags } = await useFetch('/api/tags', { params: filter ? { filter } : {} })
+import type { TagCount } from '~/types/post'
+
+const { data: tags } = await useFetch('/api/tags') as { data: Ref<TagCount[]> }
 
 useHead({ title: '标签' })
 </script>
