@@ -8,7 +8,6 @@
 
     <LayoutAppFooter />
     <UiBackToTop />
-    <UiPwaInstall />
   </div>
 </template>
 

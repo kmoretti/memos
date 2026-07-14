@@ -12,13 +12,14 @@ const props = defineProps<{
 
 const text = computed(() => {
   const loc = props.location
-  if (loc.placeholder) return loc.placeholder
+  if (!loc) return ''
   const lat = Number(loc.latitude)
   const lng = Number(loc.longitude)
-  if (!isNaN(lat) && !isNaN(lng)) {
-    return `${lat.toFixed(2)}°, ${lng.toFixed(2)}°`
-  }
-  return ''
+  const hasCoords = !isNaN(lat) && !isNaN(lng)
+  const parts: string[] = []
+  if (hasCoords) parts.push(`${lat.toFixed(2)}°, ${lng.toFixed(2)}°`)
+  if (loc.placeholder) parts.push(loc.placeholder)
+  return parts.join(' · ')
 })
 </script>
 
