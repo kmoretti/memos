@@ -1,6 +1,7 @@
 <template>
   <div class="comment-item">
-    <div class="comment-avatar-placeholder">
+    <img v-if="avatarUrl" :src="avatarUrl" class="comment-avatar" :alt="comment.author" />
+    <div v-else class="comment-avatar-placeholder">
       <UiIcon name="ph:user-circle" :size="28" />
     </div>
     <div class="comment-body">
@@ -14,7 +15,13 @@
 <script setup lang="ts">
 import type { UnifiedComment } from '~/types/post'
 
-defineProps<{ comment: UnifiedComment }>()
+const props = defineProps<{ comment: UnifiedComment }>()
+
+const config = useAppConfig() as any
+const avatarUrl = computed(() => {
+  if (props.comment.avatar) return props.comment.avatar
+  return config.site?.avatar || ''
+})
 </script>
 
 <style scoped>
@@ -23,6 +30,13 @@ defineProps<{ comment: UnifiedComment }>()
   gap: 0.75rem;
   padding: 0.75rem 0;
   border-bottom: 1px dashed var(--border);
+}
+.comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
 }
 .comment-avatar-placeholder {
   width: 28px;

@@ -11,20 +11,23 @@ export default defineNuxtConfig({
     appManifest: true,
   },
   runtimeConfig: {
+    dataSource: process.env.DATA_SOURCE || 'ech0',
+    ech0BaseUrl: process.env.ECH0_BASE_URL || 'https://m.081531.xyz',
+    ech0AccessToken: process.env.ECH0_ACCESS_TOKEN || '',
     memosBaseUrl: process.env.MEMOS_BASE_URL || 'https://mm.2005815.xyz',
     memosAccessToken: process.env.MEMOS_ACCESS_TOKEN || '',
-    webPushPrivateKey: process.env.WEB_PUSH_PRIVATE_KEY || 'KLakvOXpsk2U5t_FS5Don40b5BGqO8jYvS2UrJXShYo',
+    webPushPrivateKey: process.env.WEB_PUSH_PRIVATE_KEY || '',
     public: {
-      siteTitle: '我的博客',
+      siteTitle: '克喵的朋友圈',
       webPushPublicKey: 'BDSM0sJLDYaBxpiwjzTDa57Cm1HL95qVLgRiz-BI1EXvoRbvgAsQjuYIkPOphAyPmypBUFb93YV3YhBg7HQOFeU',
     },
   },
   app: {
     head: {
-      title: '我的博客',
+      title: '克喵的朋友圈',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
-        { name: 'description', content: '基于 Memos 的个人博客' },
+        { name: 'description', content: '基于Ech0的个人社交博客' },
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'theme-color', content: '#5b7a9d' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },

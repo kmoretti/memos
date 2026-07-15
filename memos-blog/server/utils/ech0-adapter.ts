@@ -1,10 +1,19 @@
-import { getEch0Client } from './ech0-client'
+import { createEch0Client } from './ech0-client'
 import type { DataSourceAdapter } from './dataSource'
 import type { UnifiedPost, UnifiedPostResponse, UnifiedComment, TagCount } from '~/types/post'
 
 export class Ech0Adapter implements DataSourceAdapter {
+  private _client: any = null
+
   private getClient() {
-    return getEch0Client()
+    if (!this._client) {
+      const config = useRuntimeConfig()
+      this._client = createEch0Client({
+        baseUrl: config.ech0BaseUrl || 'https://m.081531.xyz',
+        token: config.ech0AccessToken || undefined,
+      })
+    }
+    return this._client
   }
 
   async query(params: {
@@ -72,7 +81,8 @@ export class Ech0Adapter implements DataSourceAdapter {
   }
 
   private transformEcho(echo: any): UnifiedPost {
-    const baseUrl = process.env.ECH0_BASE_URL || 'https://m.081531.xyz'
+    const config = useRuntimeConfig()
+    const baseUrl = config.ech0BaseUrl || 'https://m.081531.xyz'
 
     const images = (echo.echo_files || [])
       .filter((f: any) => f.file?.category === 'image')

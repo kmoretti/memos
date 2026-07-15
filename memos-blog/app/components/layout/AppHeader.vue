@@ -2,13 +2,12 @@
   <header class="header-wrapper">
     <nav class="header-nav" :class="{ 'header-nav--scrolled': scrolled }">
       <div class="header-nav-inner page-container">
-        <NuxtLink to="/" class="header-title">{{ config.site.title }}</NuxtLink>
+        <div class="header-nav-left">
+          <NuxtLink to="/" class="header-title">{{ config.site.title }}</NuxtLink>
+        </div>
         <div class="header-actions">
           <a v-if="config.site.social?.github" :href="config.site.social.github" target="_blank" class="header-action" title="GitHub">
             <UiIcon name="ph:github-logo" :size="18" />
-          </a>
-          <a v-if="config.site.social?.twitter" :href="config.site.social.twitter" target="_blank" class="header-action" title="Twitter">
-            <UiIcon name="ph:x-logo" :size="18" />
           </a>
           <a v-if="config.site.social?.email" :href="config.site.social.email" target="_blank" class="header-action" title="Email">
             <UiIcon name="ph:envelope" :size="18" />
@@ -19,7 +18,7 @@
           <NuxtLink to="/tags" class="header-action">
             <UiIcon name="ph:tag" :size="18" />
           </NuxtLink>
-          <a :href="config.memos.authUrl" target="_blank" class="header-action" title="登录 Memos">
+          <a :href="config.memos.authUrl" target="_blank" class="header-action" title="登录">
             <UiIcon name="ph:user" :size="18" />
           </a>
           <UiDarkModeToggle />
@@ -48,7 +47,7 @@
             <span class="banner-title">{{ config.site.title }}</span>
             <div v-if="config.banner?.logo" class="banner-avatar-wrap">
               <template v-if="config.banner?.avatarLink">
-                <a :href="config.banner.avatarLink" target="_blank">
+                <a :href="config.banner.avatarLink">
                   <img :src="config.banner.logo" class="banner-avatar" :alt="config.site.author" />
                 </a>
               </template>
@@ -108,6 +107,10 @@ onUnmounted(() => {
   justify-content: space-between;
   height: 100%;
 }
+.header-nav-left {
+  display: flex;
+  align-items: center;
+}
 .header-title {
   font-family: var(--font-heading);
   font-size: 1.2rem;
@@ -133,12 +136,13 @@ onUnmounted(() => {
   color: var(--text);
 }
 
+/* Banner */
 .header-banner {
   position: relative;
   width: 100%;
   height: 320px;
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow: visible;
 }
 .header-banner--empty {
   height: 0;
@@ -149,6 +153,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: var(--radius);
 }
 .banner-image {
   position: absolute;
@@ -157,6 +162,7 @@ onUnmounted(() => {
   height: 100%;
   background-size: cover;
   background-position: center;
+  border-radius: var(--radius);
 }
 .banner-fallback {
   position: absolute;
@@ -164,10 +170,12 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   background: var(--reaction-bg);
+  border-radius: var(--radius);
 }
 .banner-overlay {
   position: absolute;
   inset: 0;
+  border-radius: var(--radius);
   background: linear-gradient(
     to bottom,
     transparent 0%,
@@ -176,39 +184,48 @@ onUnmounted(() => {
   );
 }
 
+/* Banner info: title + avatar both on right */
 .banner-info {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 0 1rem 1rem;
+  padding: 0 1.25rem 1rem;
 }
 .banner-info-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
   gap: 0.6rem;
 }
+.banner-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  line-height: 1.4;
+}
 .banner-avatar-wrap {
   flex-shrink: 0;
+  /* 头像一半在 Banner 内，一半在 Banner 外 */
+  margin-bottom: -28px;
+  position: relative;
+  z-index: 2;
 }
 .banner-avatar {
   width: 56px;
   height: 56px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
   display: block;
-}
-.banner-title {
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  border: 3px solid var(--bg-card, #fff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Description */
 .banner-site-desc {
-  margin: 0.75rem 0 1rem;
+  margin: 1.25rem 0 0.75rem;
   text-align: right;
   font-size: 0.85rem;
   color: var(--text-sub);
@@ -219,9 +236,18 @@ onUnmounted(() => {
     height: 220px;
     border-radius: var(--radius-sm);
   }
+  .banner-video,
+  .banner-image,
+  .banner-fallback,
+  .banner-overlay {
+    border-radius: var(--radius-sm);
+  }
   .banner-avatar {
     width: 46px;
     height: 46px;
+  }
+  .banner-avatar-wrap {
+    margin-bottom: -22px;
   }
   .banner-info {
     padding: 0 0.75rem 0.75rem;

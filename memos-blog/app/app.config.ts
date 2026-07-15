@@ -17,7 +17,7 @@ export default {
   memos: {
     pageSize: 10,
     defaultVisibility: 'PUBLIC',
-    authUrl: 'https://mm.2005815.xyz/auth',
+    authUrl: 'https://m.081531.xyz/',
     // 留空则展示所有用户
     creator: 'users/kemiao',
   },

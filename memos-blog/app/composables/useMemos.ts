@@ -1,9 +1,7 @@
-import type { UnifiedPost, UnifiedPostResponse } from '~/types/post'
-
 export function useMemos(extraFilter?: string) {
-  const posts = ref<UnifiedPost[]>([])
+  const posts = ref<any[]>([])
   const loading = ref(false)
-  const pageToken = ref('')
+  const page = ref(1)
   const hasMore = ref(true)
   const config = useAppConfig() as any
 
@@ -14,19 +12,17 @@ export function useMemos(extraFilter?: string) {
     loading.value = true
 
     try {
-      const params: Record<string, any> = {
-        pageSize: config.memos?.pageSize || 20,
-      }
+      const pageSize = config.memos?.pageSize || 10
 
       if (initial) {
-        pageToken.value = ''
+        page.value = 1
       }
 
-      if (pageToken.value) {
-        params.pageToken = pageToken.value
+      const params: Record<string, any> = {
+        page: page.value,
+        pageSize,
       }
 
-      // Extract tag filter from extraFilter
       if (extraFilter) {
         const tagMatch = extraFilter.match(/tag in \['(.+?)'\]/)
         if (tagMatch) {
@@ -34,7 +30,7 @@ export function useMemos(extraFilter?: string) {
         }
       }
 
-      const data = await $fetch('/api/memos', { params }) as UnifiedPostResponse
+      const data = await $fetch('/api/memos', { params }) as any
 
       if (initial) {
         posts.value = data.items || []
@@ -42,8 +38,12 @@ export function useMemos(extraFilter?: string) {
         posts.value.push(...(data.items || []))
       }
 
-      pageToken.value = data.nextPageToken || ''
-      hasMore.value = !!data.nextPageToken || (data.items?.length === (params.pageSize || 20) && data.items.length > 0)
+      const returnedCount = data.items?.length || 0
+      hasMore.value = returnedCount >= pageSize
+
+      if (hasMore.value) {
+        page.value++
+      }
     } catch (error) {
       console.error('Failed to fetch posts:', error)
     } finally {
